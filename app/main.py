@@ -66,7 +66,7 @@ def create_plot(
                         y=[pos[1]],
                         mode="markers",
                         marker=dict(color="red", symbol="star", size=15),
-                        name="必須カバー位置",
+                        name="必須カバー地点",
                         showlegend=is_display_legend_mandatory_points,
                     )
                 )
@@ -105,7 +105,7 @@ def create_plot(
                     y=[pos[1]],
                     mode="markers",
                     marker=dict(color="red", symbol="star", size=15),
-                    name="必須カバー位置",
+                    name="必須カバー地点",
                     showlegend=show_legend,
                 )
             )
@@ -118,7 +118,7 @@ def create_plot(
                     y=[pos[1]],
                     mode="markers",
                     marker=dict(color="black", symbol="circle", size=10),
-                    name="カバーされていない位置",
+                    name="カバーされていない地点",
                     showlegend=show_legend,
                 )
             )
@@ -131,7 +131,7 @@ def create_plot(
                     y=[pos[1]],
                     mode="markers",
                     marker=dict(color="green", symbol="square", size=12),
-                    name="カバーされた位置",
+                    name="カバーされた地点",
                     showlegend=show_legend,
                 )
             )
@@ -150,26 +150,27 @@ def create_plot(
     return fig
 
 
-# Streamlit interface
-st.title("街灯設置最適化")
-locations = st.number_input(
-    "街灯を設置できる場所の数", min_value=10, max_value=100, value=20, step=1
-)
-coverage_range = st.slider(
-    "街灯がカバーできる距離", min_value=1.0, max_value=5.0, value=2.0, step=0.1
-)
-max_lamps = st.number_input(
-    "設置可能な街灯の最大数", min_value=1, max_value=locations, value=5, step=1
-)
-mandatory_points = st.multiselect(
-    "必ずカバーすべき地点のインデックス",
-    options=list(range(int(locations))),
-    default=[0, 5, 10],
-)
-
-if st.button("求解"):
-    positions, lamp_status, point_covered = solve_streetlight_problem(
-        int(locations), coverage_range, int(max_lamps), mandatory_points
+if __name__ == "__main__":
+    # Streamlit interface
+    st.title("街灯設置最適化")
+    locations = st.number_input(
+        "街灯を設置できる場所の数", min_value=10, max_value=100, value=20, step=1
     )
-    fig = create_plot(positions, lamp_status, point_covered, coverage_range)
-    st.plotly_chart(fig)
+    coverage_range = st.slider(
+        "街灯がカバーできる距離", min_value=1.0, max_value=5.0, value=2.0, step=0.1
+    )
+    max_lamps = st.number_input(
+        "設置可能な街灯の最大数", min_value=1, max_value=locations, value=5, step=1
+    )
+    mandatory_points = st.multiselect(
+        "必ずカバーすべき地点のインデックス",
+        options=list(range(int(locations))),
+        default=[0, 5, 10],
+    )
+
+    if st.button("求解"):
+        positions, lamp_status, point_covered = solve_streetlight_problem(
+            int(locations), coverage_range, int(max_lamps), mandatory_points
+        )
+        fig = create_plot(positions, lamp_status, point_covered, coverage_range)
+        st.plotly_chart(fig)
