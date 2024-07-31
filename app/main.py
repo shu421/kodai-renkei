@@ -6,13 +6,12 @@ import streamlit as st
 
 def solve_streetlight_problem(
     locations: int,
+    positions: np.ndarray,
     coverage_range: int,
     max_lamps: int,
     mandatory_points: list[int],
+    verbose: bool = True,
 ) -> tuple[np.array, list[pulp.value], list[pulp.value]]:
-    # Generate random positions
-    positions = np.random.rand(locations, 2) * 10
-
     # Create coverage matrix
     cover = np.zeros((locations, locations), dtype=int)
     for i in range(locations):
@@ -42,11 +41,12 @@ def solve_streetlight_problem(
     lamp_status = [pulp.value(x[i]) for i in range(locations)]
     point_covered = [pulp.value(y[j]) for j in range(locations)]
 
-    st.write(f"最適化結果: {pulp.LpStatus[prob.status]}")
+    if verbose:
+        st.write(f"最適化結果 (街灯数={max_lamps}): {pulp.LpStatus[prob.status]}")
     return positions, lamp_status, point_covered
 
 
-def create_plot(
+def create_2d_plot(
     positions: np.ndarray,
     lamp_status: list[pulp.value],
     point_covered: list[pulp.value],
@@ -147,20 +147,51 @@ def create_plot(
         xaxis=dict(range=[-1, 12]),
         yaxis=dict(range=[-1, 12]),
     )
+
+    return fig
+
+
+def create_coverage_plot(max_lamps_list: list[int], verbose: bool = False) -> go.Figure:
+    coverage_rate = []
+    for max_lamps in max_lamps_list:
+        _, lamp_status, point_covered = solve_streetlight_problem(
+            int(locations),
+            positions,
+            coverage_range,
+            int(max_lamps),
+            mandatory_points,
+            verbose,
+        )
+        coverage_rate.append(sum(point_covered) / len(point_covered))
+    fig = go.Figure(
+        go.Scatter(
+            x=max_lamps_list,
+            y=coverage_rate,
+            mode="lines+markers",
+            marker=dict(size=10),
+        )
+    )
+    fig.update_layout(
+        title="カバー率の変化",
+        xaxis_title="街灯数",
+        yaxis_title="カバー率",
+        width=700,
+        height=500,
+    )
     return fig
 
 
 if __name__ == "__main__":
-    # Streamlit interface
+    # Streamlit interfac
     st.title("街灯設置最適化")
+
+    st.markdown("---")
+    st.markdown("### パラメータ")
     locations = st.number_input(
         "街灯を設置できる場所の数", min_value=10, max_value=100, value=20, step=1
     )
     coverage_range = st.slider(
         "街灯がカバーできる距離", min_value=1.0, max_value=5.0, value=2.0, step=0.1
-    )
-    max_lamps = st.number_input(
-        "設置可能な街灯の最大数", min_value=1, max_value=locations, value=5, step=1
     )
     mandatory_points = st.multiselect(
         "必ずカバーすべき地点のインデックス",
@@ -168,9 +199,32 @@ if __name__ == "__main__":
         default=[0, 5, 10],
     )
 
-    if st.button("求解"):
+    seed = st.number_input("乱数シード", min_value=0, max_value=100, value=0, step=1)
+
+    st.markdown("---")
+    st.markdown("### 結果の可視化")
+    max_lamps = st.number_input(
+        "設置可能な街灯の最大数", min_value=1, max_value=locations, value=5, step=1
+    )
+
+    np.random.seed(seed)
+    positions = np.random.rand(int(locations), 2) * 10
+
+    if st.button("結果の可視化"):
         positions, lamp_status, point_covered = solve_streetlight_problem(
-            int(locations), coverage_range, int(max_lamps), mandatory_points
+            int(locations), positions, coverage_range, int(max_lamps), mandatory_points
         )
-        fig = create_plot(positions, lamp_status, point_covered, coverage_range)
+        fig = create_2d_plot(positions, lamp_status, point_covered, coverage_range)
+        st.plotly_chart(fig)
+
+    st.markdown("---")
+    st.markdown("### カバー率のプロット")
+    min_max_lamps = st.slider("街灯数の最小値", min_value=1, max_value=locations, value=5, step=1)
+    max_max_lamps = st.slider("街灯数の最大値", min_value=1, max_value=locations, value=10, step=1)
+    assert min_max_lamps <= max_max_lamps, "最小値が最大値より大きいです"
+
+    if st.button("カバー率のプロット"):
+        max_lamps_list = list(range(min_max_lamps, max_max_lamps + 1))
+
+        fig = create_coverage_plot(max_lamps_list, verbose=True)
         st.plotly_chart(fig)
