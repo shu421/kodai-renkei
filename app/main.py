@@ -47,7 +47,7 @@ def solve_streetlight_problem(
 
 
 def create_plot(
-    positions: np.array,
+    positions: np.ndarray,
     lamp_status: list[pulp.value],
     point_covered: list[pulp.value],
     coverage_range: int,
@@ -162,7 +162,9 @@ max_lamps = st.number_input(
     "設置可能な街灯の最大数", min_value=1, max_value=locations, value=5, step=1
 )
 mandatory_points = st.multiselect(
-    "必ずカバーすべき地点のインデックス", options=list(range(locations)), default=[0, 5, 10]
+    "必ずカバーすべき地点のインデックス",
+    options=list(range(int(locations))),
+    default=[0, 5, 10],
 )
 
 if st.button("求解"):
