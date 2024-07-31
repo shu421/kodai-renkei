@@ -19,6 +19,11 @@
    ```
 
 ## Run app
+
+### Deployed
+- app URL: https://kodai-renkei-hitachikita1.streamlit.app/
+
+### Local
 ```bash
 rye run streamlit run app/main.py
 
