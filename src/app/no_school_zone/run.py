@@ -1,16 +1,17 @@
 import numpy as np
 import streamlit as st
 
-from src.app.plot import create_2d_plot, create_coverage_plot, solve_streetlight_problem
+from src.app.no_school_zone.plot import create_2d_plot, create_coverage_plot
+from src.app.no_school_zone.solver import solve_streetlight_problem
 
-if __name__ == "__main__":
-    st.title("街灯設置最適化")
+
+def run_no_school_zone_app() -> None:
+    st.markdown("---")
+    st.markdown("## 学校区域外")
 
     st.markdown("---")
     st.markdown("### パラメータ")
-    locations = st.number_input(
-        "街灯を設置できる場所の数", min_value=10, max_value=100, value=20, step=1
-    )
+    locations = st.number_input("地点数", min_value=10, max_value=100, value=20, step=1)
     coverage_range = st.slider(
         "街灯がカバーできる距離", min_value=0.1, max_value=5.0, value=2.0, step=0.1
     )
