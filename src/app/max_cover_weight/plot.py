@@ -100,7 +100,7 @@ def create_2d_plot(
         if node in important_points:
             color = "blue"
             size = 15
-            name = "重要な地点"
+            name = "住宅地や駅など"
             showlegend = is_display_legend_station
             is_display_legend_station = False
         elif node == school_index:
@@ -222,7 +222,7 @@ def create_initial_plot(
         if node in important_points:
             color = "blue"
             size = 20
-            name = "重要な地点"
+            name = "住宅地や駅など"
             showlegend = is_display_legend_station
             is_display_legend_station = False
         elif node == school_index:

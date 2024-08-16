@@ -23,7 +23,7 @@ def run() -> None:
 
     # 重要な地点を選択
     important_points = st.sidebar.multiselect(
-        "重要な地点のインデックス",
+        "住宅地や駅など",
         options=list(range(grid_size**2)),  # グラフのノード数に合わせる
         default=[10, 21, 25],  # 適宜変更
     )
