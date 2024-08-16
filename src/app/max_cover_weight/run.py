@@ -97,10 +97,8 @@ def run() -> None:
             G,
             positions,
             max_lamps,
-            commute_route_nodes,
             node_weights,
             pre_lit_values=pre_lit_values,
-            bright_threshold=0.5,  # 通学路の照度の閾値
         )
 
         if prob.status != 1:

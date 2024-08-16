@@ -7,9 +7,7 @@ def solve_streetlight_problem(
     G: nx.Graph,
     positions: dict[int, tuple[int, int]],
     max_lamps: int,
-    commute_route_nodes: list[int],
     node_weights: dict[int, int],  # 通学路に対する人流の重み
-    bright_threshold: float = 0.8,
     pre_lit_values: dict[int, float] = {},
     verbose: bool = True,
 ) -> tuple[pulp.LpProblem, list[float], list[float]]:
@@ -58,10 +56,6 @@ def solve_streetlight_problem(
     # 照度の最大値
     for j in range(num_nodes):
         prob += y[j] <= 1
-
-    # 通学路の照度制約を追加
-    for j in commute_route_nodes:
-        prob += y[j] >= bright_threshold
 
     # 求解
     prob.solve(pulp.PULP_CBC_CMD(msg=0))
