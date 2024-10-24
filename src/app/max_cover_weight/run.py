@@ -10,7 +10,7 @@ from src.app.max_cover_weight.solver import solve_streetlight_problem
 def run() -> None:
     #################### ユーザー入力欄 ####################
     st.sidebar.markdown("### パラメータ設定")
-    grid_size = st.sidebar.slider("グリッドのサイズ", min_value=3, max_value=30, value=8, step=1)
+    grid_size = st.sidebar.slider("グリッドのサイズ", min_value=3, max_value=30, value=20, step=1)
     max_value = grid_size * (grid_size - 1) * 2
     num_random_edges = st.sidebar.slider(
         "エッジの数",
@@ -23,9 +23,9 @@ def run() -> None:
 
     # 重要な地点を選択
     important_points = st.sidebar.multiselect(
-        "住宅地や駅など",
+        "駅",
         options=list(range(grid_size**2)),  # グラフのノード数に合わせる
-        default=[10, 21, 25],  # 適宜変更
+        default=[105],  # 適宜変更
     )
 
     # 各重要な地点に対する人流（重み）を設定
@@ -37,7 +37,7 @@ def run() -> None:
 
     # 街灯の最大数
     max_lamps = st.sidebar.number_input(
-        "設置可能な街灯の最大数", min_value=1, max_value=grid_size**2, value=5, step=1
+        "設置可能な街灯の最大数", min_value=1, max_value=grid_size**2, value=10, step=1
     )
     max_lamps = int(max_lamps)
 
@@ -45,7 +45,7 @@ def run() -> None:
     pre_lit_points = st.sidebar.multiselect(
         "既に明るい地点のインデックス",
         options=list(range(grid_size**2)),
-        default=[1, 20, 30],  # 適宜変更
+        default=[145, 170, 232],  # 適宜変更
     )
     pre_lit_values = {}
     for point in pre_lit_points:

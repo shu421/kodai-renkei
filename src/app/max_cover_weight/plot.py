@@ -78,7 +78,7 @@ def create_2d_plot(
 
         # 通学路のエッジは別の色で描画し、重みに応じて太さを変更
         if node1 in commute_route_nodes and node2 in commute_route_nodes:
-            edge_color = "rgba(0, 255, 255, 0.8)"  # Cyan color for commute route edges
+            edge_color = "rgba(0, 255, 255, 1.0)"  # Cyan color for commute route edges
             weight = max(node_weights.get(node1, 1), node_weights.get(node2, 1))
             edge_width = weight * 2  # 通学路の重みに応じた太さ
 
@@ -99,24 +99,28 @@ def create_2d_plot(
 
         if node in important_points:
             color = "blue"
+            opacity = 1
             size = 15
             name = "住宅地や駅など"
             showlegend = is_display_legend_station
             is_display_legend_station = False
         elif node == school_index:
             color = "green"
+            opacity = 1
             size = 15
             name = "日立北高校"
             showlegend = is_display_legend_school
             is_display_legend_school = False
         elif node in pre_lit_values:
             color = "purple"  # 既に照度を持つ地点は紫で表示
-            size = 20
+            opacity = 1
+            size = 10
             name = "既に明るい地点"
             showlegend = is_display_legend_pre_lit_points
             is_display_legend_pre_lit_points = False
         elif lamp == 1:
             color = "red"
+            opacity = 1
             size = 20
             name = "街灯の位置"
             showlegend = is_display_legend_placed_lamps
@@ -125,12 +129,14 @@ def create_2d_plot(
             # カバーされているかどうかでノードの色とサイズを調整
             if cover > 0:
                 color = "yellow"
+                opacity = 0.5
                 size = int(10 + 10 * cover)  # 照度に応じてサイズを拡大
                 name = "照らされている地点"
                 showlegend = is_display_legend_covered_points
                 is_display_legend_covered_points = False
             else:
                 color = "black"
+                opacity = 1
                 size = 8
                 name = "照らされていない地点"
                 showlegend = is_display_legend_uncovered_points
@@ -141,7 +147,9 @@ def create_2d_plot(
                 x=[pos[0]],
                 y=[pos[1]],
                 mode="markers",
-                marker=dict(color=color, size=size, line=dict(color="black", width=1)),
+                marker=dict(
+                    color=color, size=size, opacity=opacity, line=dict(color="black", width=1)
+                ),
                 name=name,
                 showlegend=showlegend,
             )
@@ -222,7 +230,7 @@ def create_initial_plot(
         if node in important_points:
             color = "blue"
             size = 20
-            name = "住宅地や駅など"
+            name = "駅"
             showlegend = is_display_legend_station
             is_display_legend_station = False
         elif node == school_index:
@@ -233,7 +241,7 @@ def create_initial_plot(
             is_display_legend_school = False
         elif node in pre_lit_values:
             color = "purple"  # 既に照度を持つ地点は紫で表示
-            size = 15
+            size = 10
             name = "既に明るい地点"
             showlegend = is_display_legend_pre_lit_points
             is_display_legend_pre_lit_points = False

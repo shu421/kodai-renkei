@@ -15,8 +15,10 @@ dependencies = [
     "tqdm>=4.64.1",
     "pulp>=2.9.0",
     "plotly>=5.23.0",
-    "streamlit>=1.37.0",
+    "streamlit>=1.37.1",
     "networkx>=3.3",
+    "streamlit-jupyter>=0.2.1",
+    "streamlit_jupyter>=0.2.1",
 ]
 readme = "README.md"
 requires-python = ">= 3.10"
