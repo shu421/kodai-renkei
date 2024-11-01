@@ -32,7 +32,7 @@ def run() -> None:
     commute_weights = {}
     for point in important_points:
         commute_weights[point] = st.sidebar.slider(
-            f"地点 {point} に対する人流", min_value=1, max_value=100, value=10, step=1
+            f"地点 {point} に対する人流", min_value=1, max_value=1000, value=10, step=1
         )
 
     # 街灯の最大数
@@ -59,9 +59,9 @@ def run() -> None:
     school_index = grid_size**2 - 1
 
     # 重みを正規化
-    total_weight = sum(commute_weights.values())
+    default_weight = 200  # デフォルトの通行人数
     commute_weights = {
-        point: 1 + (weight / total_weight) for point, weight in commute_weights.items()
+        point: 1 + (weight / default_weight) for point, weight in commute_weights.items()
     }
     # 通学路の最短経路を計算し、それぞれの重みをノードに加算
     node_weights = {node: 1 for node in range(grid_size**2)}  # 全ノードに初期値として重み1を設定
